@@ -1,0 +1,12 @@
+services:
+  - type: web # Specifies a web service
+    name: simple-video-downloader # Choose a name for your service
+    env: python # The runtime environment
+    plan: free # Or your desired plan (free tier might be slow or limited)
+    buildCommand: "pip install --no-cache-dir -r requirements.txt" # Command to install dependencies
+    startCommand: "gunicorn app:app --timeout 120" # Command to start the server (increase timeout for yt-dlp potentially)
+    envVars:
+      - key: PYTHON_VERSION # Optional: Specify Python version if needed
+        value: 3.11 # Choose a version available on Render (e.g., 3.9, 3.10, 3.11)
+      # - key: FFMPEG_PATH # Usually not needed as Render includes ffmpeg, but good to know
+      #   value: /usr/bin/ffmpeg # Example path if you needed to specify it

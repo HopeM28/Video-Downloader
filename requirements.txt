@@ -1,0 +1,3 @@
+gunicorn
+yt-dlp
+Flask
