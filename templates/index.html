@@ -37,14 +37,14 @@
 </head>
 
 <body>
-    <div class="container mt-4">
-        <h1 class="mb-4 text-center">Video Downloader (YT & FB)</h1>
+    <div class="container mt-4 mb-5"> <!-- Added mb-5 for footer spacing -->
+        <h1 class="mb-4 text-center">Video Downloader (YT, FB, etc.)</h1>
 
         <form method="POST" action="{{ url_for('index') }}" class="mb-4">
             <div class="mb-3">
                 <label for="url" class="form-label">Video URL:</label>
                 <textarea class="form-control" id="url" name="url" rows="2"
-                    placeholder="Paste YouTube or Facebook video link here..."
+                    placeholder="Paste video link here (e.g., YouTube, Facebook, Twitter, etc.)..."
                     required>{{ submitted_url or '' }}</textarea>
             </div>
             <button type="submit" class="btn btn-primary w-100">Get Video Info</button>
@@ -65,7 +65,7 @@
         <!-- Display error message from processing -->
         {% if error %}
         <div class="alert alert-danger" role="alert">
-            <strong>Error:</strong> {{ error }}
+            {{ error }}
         </div>
         {% endif %}
 
@@ -73,12 +73,12 @@
         {% if video_info %}
         <hr>
         <div class="video-details mt-4">
-            <div class="row">
-                <div class="col-md-8">
-                    <h2 class="h4 mb-3">{{ video_info.title }}</h2>
+            <div class="row align-items-center"> <!-- align-items-center for vertical alignment -->
+                <div class="col-md-8 order-md-1"> <!-- Text column -->
+                    <h2 class="h4 mb-2 mb-md-3">{{ video_info.title }}</h2>
                 </div>
                 {% if video_info.thumbnail %}
-                <div class="col-md-4 text-md-end">
+                <div class="col-md-4 text-center text-md-end order-md-2 mb-3 mb-md-0"> <!-- Thumbnail column -->
                     <div class="thumbnail-container d-inline-block">
                         <img src="{{ video_info.thumbnail }}" alt="Video Thumbnail" class="img-fluid">
                     </div>
@@ -88,30 +88,38 @@
 
 
             {% if video_info.formats %}
-            <h3 class="h5 mt-4">Available Formats:</h3>
+            <h3 class="h5 mt-4">Available Download Formats:</h3>
             <div class="table-responsive-sm">
-                <table class="table table-striped table-hover table-sm">
+                <table class="table table-striped table-hover table-sm caption-top">
+                    <caption>Formats are sorted by quality (best first). Combined streams preferred. Select a row to
+                        download.</caption>
                     <thead>
                         <tr>
-                            <th>Quality</th>
-                            <th>Ext</th>
-                            <th>Size (Approx)</th>
-                            <th>Codecs (V/A)</th>
-                            <th>Action</th>
+                            <th scope="col">Quality</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Ext</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for fmt in video_info.formats %}
                         <tr>
                             <td>{{ fmt.quality }}</td>
+                            <td>{{ fmt.type }}</td>
                             <td>{{ fmt.ext }}</td>
-                            <td>{{ fmt.filesize }}</td>
-                            <td>{{ fmt.vcodec }} / {{ fmt.acodec }}</td>
+                            <td>{{ fmt.readable_size }}</td>
                             <td>
                                 <a href="{{ url_for('download', url=video_info.original_url, format_id=fmt.format_id) }}"
                                     class="btn btn-success btn-sm" target="_blank" rel="noopener noreferrer">
-                                    <!-- target="_blank" is important -->
-                                    Download
+                                    <!-- target="_blank" is crucial -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-download me-1" viewBox="0 0 16 16">
+                                        <path
+                                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                        <path
+                                            d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                                    </svg>Download
                                 </a>
                             </td>
                         </tr>
@@ -120,10 +128,19 @@
                 </table>
             </div>
             {% else %}
-            <p class="text-muted">No downloadable formats found for this video.</p>
+            {% if not error %} <!-- Only show this if there wasn't already a major processing error -->
+            <p class="text-warning mt-3">No direct downloadable formats found for this video, or fetching failed (check
+                error message above if present).</p>
+            {% endif %}
             {% endif %}
         </div>
         {% endif %}
+
+        <!-- Add a small footer note -->
+        <footer class="mt-5 text-center text-muted small">
+            <p>Note: Downloads may fail for videos requiring login, private videos, or due to platform limitations
+                (e.g., bot detection on servers). Use responsibly and respect copyright.</p>
+        </footer>
 
     </div><!-- /.container -->
 

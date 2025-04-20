@@ -1,0 +1,28 @@
+/* Example: Slightly larger thumbnail */
+.thumbnail-container {
+    max-width: 220px;
+    margin-bottom: 1rem;
+}
+
+.thumbnail-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Center the caption */
+.caption-top {
+    caption-side: top;
+    text-align: center;
+    color: #6c757d;
+    /* Bootstrap secondary text color */
+    padding-bottom: 0.5rem;
+}
+
+/* Ensure footer is clearly separated */
+footer {
+    border-top: 1px solid #dee2e6;
+    /* Bootstrap default border color */
+    padding-top: 1rem;
+}
